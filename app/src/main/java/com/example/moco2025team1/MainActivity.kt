@@ -17,8 +17,8 @@ import com.example.moco2025team1.model.entities.Contact
 import com.example.moco2025team1.ui.composables.ContactCard
 import com.example.moco2025team1.ui.composables.OurScaffold
 import com.example.moco2025team1.ui.screens.HomeScreen
-import com.example.moco2025team1.ui.screens.NewEntryScreen
 import com.example.moco2025team1.ui.screens.ProfileScreen
+import com.example.moco2025team1.ui.screens.PromptSelectionScreen
 import com.example.moco2025team1.ui.theme.MOCO2025Team1Theme
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.moco2025team1.viewmodel.PromptViewModel
@@ -59,8 +59,8 @@ class MainActivity : ComponentActivity() {
 //                            val name = backStack.toRoute<HomeRoute>().name
                             ProfileScreen()
                         }
-                        composable<NewEntryRoute> {
-                            NewEntryScreen()
+                        composable<PromptSelectionRoute> {
+                            PromptSelectionScreen(navController)
                         }
                     }
 
@@ -98,7 +98,7 @@ sealed class Route
 data object HomeRoute : Route()
 
 @Serializable
-data object NewEntryRoute : Route()
+data object PromptSelectionRoute : Route()
 
 @Serializable
 data object ProfileRoute : Route()
