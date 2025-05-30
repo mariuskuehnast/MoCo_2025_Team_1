@@ -1,6 +1,7 @@
 package com.example.moco2025team1
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,13 +13,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.moco2025team1.model.Contact
+import com.example.moco2025team1.model.entities.Contact
 import com.example.moco2025team1.ui.composables.ContactCard
 import com.example.moco2025team1.ui.composables.OurScaffold
 import com.example.moco2025team1.ui.screens.HomeScreen
 import com.example.moco2025team1.ui.screens.NewEntryScreen
 import com.example.moco2025team1.ui.screens.ProfileScreen
 import com.example.moco2025team1.ui.theme.MOCO2025Team1Theme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.moco2025team1.viewmodel.PromptViewModel
 import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
@@ -27,6 +30,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
+            val promptViewModel = viewModel<PromptViewModel>()
+
             MOCO2025Team1Theme {
                 OurScaffold(
                     onNavigate = { route ->
@@ -45,7 +50,7 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(
                                 contacts,
                                 onContactClick = {
-//                                    navController.navigate(HomeRoute(contacts[it].username))
+                                    //
                                 }
                             )
                         }

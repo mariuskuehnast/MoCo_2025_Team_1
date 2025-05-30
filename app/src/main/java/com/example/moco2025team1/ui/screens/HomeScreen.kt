@@ -4,7 +4,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.moco2025team1.model.Contact
+import com.example.moco2025team1.model.entities.Contact
 import com.example.moco2025team1.ui.composables.ContactCard
 import com.example.moco2025team1.ui.composables.OurScaffold
 
