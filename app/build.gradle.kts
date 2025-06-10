@@ -47,6 +47,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.room.compiler)
+    implementation(libs.androidx.material.icons.extended)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
 

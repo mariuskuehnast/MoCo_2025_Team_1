@@ -21,12 +21,14 @@ import com.example.moco2025team1.ProfileRoute
 import com.example.moco2025team1.HomeRoute
 import com.example.moco2025team1.NewEntryRoute
 import com.example.moco2025team1.Route
+import com.example.moco2025team1.ui.screens.NewEntryScreen
 
 @Composable
 @Preview
 fun OurNavigationBar(onNavigate: (route: Route) -> Unit = {}) {
     var currentRoute: Route by remember { mutableStateOf(HomeRoute) }
     val items = listOf(Home, NewEntry, Profile)
+    var isSheetOpen by remember { mutableStateOf(false) }
 
     NavigationBar {
         items.forEach { item ->
@@ -36,10 +38,18 @@ fun OurNavigationBar(onNavigate: (route: Route) -> Unit = {}) {
                     contentDescription = item.name
                 )
             }, label = { Text(item.name) }, selected = currentRoute == item.route, onClick = {
-                currentRoute = item.route
-                onNavigate(item.route)
+                if (item.route == NewEntryRoute) {
+                    isSheetOpen = true
+                } else {
+                    currentRoute = item.route
+                    onNavigate(item.route)
+                }
             })
         }
+    }
+
+    if (isSheetOpen) {
+        NewEntryScreen(onDismissRequest = { isSheetOpen = false })
     }
 }
 
