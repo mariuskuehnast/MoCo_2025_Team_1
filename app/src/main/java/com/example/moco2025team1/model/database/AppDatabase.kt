@@ -4,10 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.moco2025team1.model.daos.PromptDao
+import com.example.moco2025team1.model.entities.Entry
 import com.example.moco2025team1.model.entities.Prompt
 
-@Database(entities = [Prompt::class], version = 4)
+@Database(entities = [Prompt::class, Entry::class], version = 4)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun promptDao(): PromptDao
 
@@ -23,7 +26,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     DB_NAME
-                ).fallbackToDestructiveMigration().build().also { INSTANCE = it }
+                ).fallbackToDestructiveMigration(false).build().also { INSTANCE = it }
             }
         }
     }
