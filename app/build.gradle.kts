@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.moco2025team1"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -47,6 +47,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.room.compiler)
+    implementation(libs.androidx.material.icons.extended)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
 
