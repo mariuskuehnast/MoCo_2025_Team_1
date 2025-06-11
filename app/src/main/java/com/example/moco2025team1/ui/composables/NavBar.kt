@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.moco2025team1.ProfileRoute
 import com.example.moco2025team1.HomeRoute
+import com.example.moco2025team1.NewEntryRoute
 import com.example.moco2025team1.PromptSelectionRoute
 import com.example.moco2025team1.Route
 import com.example.moco2025team1.ui.screens.NewEntryScreen
