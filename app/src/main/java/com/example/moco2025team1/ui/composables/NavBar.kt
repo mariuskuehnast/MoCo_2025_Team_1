@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.moco2025team1.ProfileRoute
 import com.example.moco2025team1.HomeRoute
-import com.example.moco2025team1.NewEntryRoute
+import com.example.moco2025team1.PromptSelectionRoute
 import com.example.moco2025team1.Route
 import com.example.moco2025team1.ui.screens.NewEntryScreen
 
@@ -65,7 +65,7 @@ data object Home :
     BottomBarItem("Home", HomeRoute, Icons.Filled.Home, Icons.Outlined.Home)
 
 data object NewEntry :
-    BottomBarItem("New Entry", NewEntryRoute, Icons.Filled.Share, Icons.Filled.Share)
+    BottomBarItem("New Entry", PromptSelectionRoute, Icons.Filled.Share, Icons.Filled.Share)
 
 data object Profile :
     BottomBarItem("Profile", ProfileRoute, Icons.Filled.Person, Icons.Outlined.Person)

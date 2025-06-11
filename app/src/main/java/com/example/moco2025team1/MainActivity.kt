@@ -19,6 +19,7 @@ import com.example.moco2025team1.ui.composables.ContactCard
 import com.example.moco2025team1.ui.composables.OurScaffold
 import com.example.moco2025team1.ui.screens.HomeScreen
 import com.example.moco2025team1.ui.screens.ProfileScreen
+import com.example.moco2025team1.ui.screens.PromptSelectionScreen
 import com.example.moco2025team1.ui.theme.MOCO2025Team1Theme
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.moco2025team1.viewmodel.PromptViewModel
@@ -52,11 +53,6 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(
                                 contacts,
                                 onContactClick = {
-                                    promptViewModel.insertPrompt("Test")
-                                    promptViewModel.viewModelScope.launch(Dispatchers.IO) {
-                                        Log.i("Prompts", promptViewModel.getTodaysPrompts().joinToString(", "))
-                                    }
-                                    Log.i("Test", "Hello World!")
                                 }
                             )
                         }
@@ -64,6 +60,9 @@ class MainActivity : ComponentActivity() {
 //                            backStack ->
 //                            val name = backStack.toRoute<HomeRoute>().name
                             ProfileScreen()
+                        }
+                        composable<PromptSelectionRoute> {
+                            PromptSelectionScreen(navController)
                         }
                         composable<NewEntryRoute> {
 //                            NewEntryScreen()
@@ -106,6 +105,9 @@ data object HomeRoute : Route()
 
 @Serializable
 data object NewEntryRoute : Route()
+
+@Serializable
+data object PromptSelectionRoute : Route()
 
 @Serializable
 data object ProfileRoute : Route()
