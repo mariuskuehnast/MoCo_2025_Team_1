@@ -13,5 +13,9 @@ interface PromptDao {
     suspend fun insertPrompt(vararg prompt: Prompt): List<Long>
 
     @Query("SELECT * FROM prompts")
-    suspend fun getTodaysPrompts(): List<Prompt>
+    suspend fun getAllPrompts(): List<Prompt>
+
+    @Query("DELETE FROM prompts")
+    suspend fun clearPrompts()
+
 }
