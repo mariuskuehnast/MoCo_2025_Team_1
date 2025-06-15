@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
@@ -33,13 +33,13 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-fun EntryComposer(onClose: () -> Unit, onConfirm: () -> Unit) {
+fun EntryComposer(onBack: () -> Unit, onConfirm: () -> Unit) {
     val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
 
     Column {
         Box(modifier = Modifier.fillMaxWidth()) {
-            IconButton(modifier = Modifier.align(Alignment.CenterStart), onClick = { onClose() }) {
-                Icon(Icons.Filled.Close, "Close")
+            IconButton(modifier = Modifier.align(Alignment.CenterStart), onClick = { onBack() }) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, "Close")
             }
             IconButton(modifier = Modifier.align(Alignment.CenterEnd), onClick = { onConfirm() }) {
                 Icon(Icons.AutoMirrored.Filled.Send, "Send")
@@ -94,5 +94,5 @@ fun EntryComposer(onClose: () -> Unit, onConfirm: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun EntryComposerPreview() {
-    EntryComposer(onClose = {}, onConfirm = {})
+    EntryComposer(onBack = {}, onConfirm = {})
 }

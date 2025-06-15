@@ -23,7 +23,10 @@ fun NewEntryModal(onDismissRequest: () -> Unit) {
             })
 
             NewEntryModalStage.EntryComposer -> EntryComposer(
-                onClose = { onDismissRequest() },
+                onBack = {
+                    modalStage =
+                        NewEntryModalStage.PromptSelection
+                },
                 onConfirm = {
                     modalStage =
                         NewEntryModalStage.ContactSelection
