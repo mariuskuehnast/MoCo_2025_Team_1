@@ -17,12 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.moco2025team1.ProfileRoute
 import com.example.moco2025team1.HomeRoute
-import com.example.moco2025team1.NewEntryRoute
+import com.example.moco2025team1.ProfileRoute
 import com.example.moco2025team1.PromptSelectionRoute
 import com.example.moco2025team1.Route
-import com.example.moco2025team1.ui.screens.NewEntryScreen
 
 @Composable
 @Preview
@@ -39,7 +37,7 @@ fun OurNavigationBar(onNavigate: (route: Route) -> Unit = {}) {
                     contentDescription = item.name
                 )
             }, label = { Text(item.name) }, selected = currentRoute == item.route, onClick = {
-                if (item.route == NewEntryRoute) {
+                if (item.route == PromptSelectionRoute) {
                     isSheetOpen = true
                 } else {
                     currentRoute = item.route
@@ -50,7 +48,7 @@ fun OurNavigationBar(onNavigate: (route: Route) -> Unit = {}) {
     }
 
     if (isSheetOpen) {
-        NewEntryScreen(onDismissRequest = { isSheetOpen = false })
+        NewEntryModal(onDismissRequest = { isSheetOpen = false })
     }
 }
 

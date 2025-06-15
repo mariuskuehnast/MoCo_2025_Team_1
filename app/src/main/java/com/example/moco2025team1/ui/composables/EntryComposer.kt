@@ -33,7 +33,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-fun EntryComposer(onClose: () -> Unit) {
+fun EntryComposer(onClose: () -> Unit, onConfirm: () -> Unit) {
     val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
 
     Column {
@@ -41,7 +41,7 @@ fun EntryComposer(onClose: () -> Unit) {
             IconButton(modifier = Modifier.align(Alignment.CenterStart), onClick = { onClose() }) {
                 Icon(Icons.Filled.Close, "Close")
             }
-            IconButton(modifier = Modifier.align(Alignment.CenterEnd), onClick = { onClose() }) {
+            IconButton(modifier = Modifier.align(Alignment.CenterEnd), onClick = { onConfirm() }) {
                 Icon(Icons.AutoMirrored.Filled.Send, "Send")
             }
             Column(
@@ -94,5 +94,5 @@ fun EntryComposer(onClose: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun EntryComposerPreview() {
-    EntryComposer(onClose = {})
+    EntryComposer(onClose = {}, onConfirm = {})
 }
