@@ -28,12 +28,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.moco2025team1.model.entities.Prompt
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-fun EntryComposer(onBack: () -> Unit, onConfirm: () -> Unit) {
+fun EntryComposer(prompt: Prompt?, onBack: () -> Unit, onConfirm: () -> Unit) {
     val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
 
     Column {
@@ -55,7 +56,7 @@ fun EntryComposer(onBack: () -> Unit, onConfirm: () -> Unit) {
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
                 )
                 Text(
-                    "What are you grateful for right now?",
+                    prompt?.content ?: "",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -94,5 +95,5 @@ fun EntryComposer(onBack: () -> Unit, onConfirm: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun EntryComposerPreview() {
-    EntryComposer(onBack = {}, onConfirm = {})
+    EntryComposer(Prompt(content = "Test Prompt"), onBack = {}, onConfirm = {})
 }

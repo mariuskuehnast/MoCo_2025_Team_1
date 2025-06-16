@@ -18,12 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.moco2025team1.model.entities.Prompt
 import com.example.moco2025team1.ui.composables.PromptCard
 import com.example.moco2025team1.viewmodel.PromptViewModel
 
 @Composable
 fun PromptSelectionScreen(
-    onPromptSelection: () -> Unit,
+    onPromptSelection: (prompt: Prompt) -> Unit,
     viewModel: PromptViewModel = viewModel()
 ) {
     val dailyPrompts by viewModel.dailyPrompts.collectAsState(initial = emptyList())
@@ -52,7 +53,7 @@ fun PromptSelectionScreen(
                 isSelected   = (selectedIndex == index),
                 onCardClick  = {
                     if (selectedIndex == index) {
-                        onPromptSelection()
+                        onPromptSelection(prompt)
                     } else {
                         selectedIndex = index
                     }
