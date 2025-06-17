@@ -1,4 +1,4 @@
-package com.example.moco2025team1.ui.composables
+package com.example.moco2025team1.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.moco2025team1.model.entities.Prompt
+import com.example.moco2025team1.ui.composables.TextInput
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle

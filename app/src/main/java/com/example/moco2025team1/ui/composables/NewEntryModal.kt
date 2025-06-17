@@ -16,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.moco2025team1.model.entities.Prompt
+import com.example.moco2025team1.ui.screens.EntryComposer
 import com.example.moco2025team1.ui.screens.PromptSelectionScreen
 import kotlinx.serialization.Serializable
 
@@ -27,14 +28,14 @@ fun NewEntryModal(onDismissRequest: () -> Unit) {
     val navController = rememberNavController()
 
     ModalBottomSheet(sheetState = sheetState, onDismissRequest = onDismissRequest) {
-        NavHost(navController, startDestination = PromptSelection) {
-            composable<PromptSelection> {
+        NavHost(navController, startDestination = PromptSelectionRoute) {
+            composable<PromptSelectionRoute> {
                 PromptSelectionScreen(onPromptSelection = {
-                    navController.navigate(EntryComposer)
+                    navController.navigate(EntryComposerRoute)
                     prompt = it
                 })
             }
-            composable<EntryComposer>(enterTransition = {
+            composable<EntryComposerRoute>(enterTransition = {
                 slideIntoContainer(
                     animationSpec = tween(200, easing = EaseIn),
                     towards = AnimatedContentTransitionScope.SlideDirection.Start
@@ -48,28 +49,28 @@ fun NewEntryModal(onDismissRequest: () -> Unit) {
                 EntryComposer(
                     prompt = prompt,
                     onBack = {
-                        navController.navigate(PromptSelection)
+                        navController.navigate(PromptSelectionRoute)
                     },
                     onConfirm = {
                         navController.navigate(
-                            ContactSelection
+                            ContactSelectionRoute
                         )
                     })
             }
-            composable<ContactSelection> {
+            composable<ContactSelectionRoute> {
 
             }
         }
     }
 }
 
-sealed class NewEntryModalStage
+sealed class NewEntryModalRoute
 
 @Serializable
-data object PromptSelection : NewEntryModalStage()
+data object PromptSelectionRoute : NewEntryModalRoute()
 
 @Serializable
-data object EntryComposer : NewEntryModalStage()
+data object EntryComposerRoute : NewEntryModalRoute()
 
 @Serializable
-data object ContactSelection : NewEntryModalStage()
+data object ContactSelectionRoute : NewEntryModalRoute()
