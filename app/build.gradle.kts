@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "2.1.20"
     id("com.google.devtools.ksp")
+    alias(libs.plugins.firebase.android)
 }
 
 android {
@@ -53,6 +54,10 @@ dependencies {
 
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.core.ktx)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.database)
+    implementation(libs.androidx.runtime.livedata)
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
