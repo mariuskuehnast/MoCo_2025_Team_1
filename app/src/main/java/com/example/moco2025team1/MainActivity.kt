@@ -22,6 +22,7 @@ import com.example.moco2025team1.ui.screens.ProfileScreen
 import com.example.moco2025team1.ui.screens.PromptSelectionScreen
 import com.example.moco2025team1.ui.theme.MOCO2025Team1Theme
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.moco2025team1.ui.screens.ContactSelectionScreen
 import com.example.moco2025team1.viewmodel.PromptViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,6 +68,9 @@ class MainActivity : ComponentActivity() {
                         composable<NewEntryRoute> {
 //                            NewEntryScreen()
                         }
+                        composable<ContactSelectionRoute> {
+                            ContactSelectionScreen()
+                        }
                     }
 
                 }
@@ -111,4 +115,7 @@ data object PromptSelectionRoute : Route()
 
 @Serializable
 data object ProfileRoute : Route()
+
+@Serializable
+data object ContactSelectionRoute : Route()
 
