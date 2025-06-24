@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.moco2025team1.model.entities.Entry
 import com.example.moco2025team1.model.entities.User
+import com.example.moco2025team1.ui.composables.ContactRow
+import com.example.moco2025team1.ui.composables.ContactSearchBar
 import com.example.moco2025team1.viewmodel.ProfileViewModel
 
 @Composable
@@ -46,7 +48,6 @@ fun ContactSelectionScreen(
                 onQueryChange = { searchQuery = it }
             )
 
-            // 4) Render the filtered, real friend list
             filteredUsers.forEach { user ->
                 val isChecked = user in selectedUsers
                 ContactRow(
@@ -73,69 +74,5 @@ fun ContactSelectionScreen(
         ) {
             Text("Send")
         }
-    }
-}
-
-@Composable
-fun ContactSearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    OutlinedTextField(
-        value = query,
-        onValueChange = onQueryChange,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        placeholder = { Text("Search users") },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "Search icon"
-            )
-        },
-        singleLine = true
-    )
-}
-
-@Composable
-fun ContactRow(
-    user: User,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Checkbox(
-            checked = checked,
-            onCheckedChange = onCheckedChange
-        )
-        Spacer(Modifier.width(12.dp))
-
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = user.avatar,
-                contentDescription = "${user.userName} avatar",
-                modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Spacer(Modifier.width(12.dp))
-
-        Text(
-            text = user.userName,
-            style = MaterialTheme.typography.bodyLarge
-        )
     }
 }
