@@ -21,13 +21,19 @@ import com.example.moco2025team1.Route
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OurScaffold(onNavigate: (route: Route) -> Unit = {}, content: @Composable () -> Unit = {}) {
+fun OurScaffold(
+    onNavigate: (Route) -> Unit = {},
+    showBottomBar: Boolean = true,
+    content: @Composable () -> Unit = {}
+) {
     Scaffold(topBar = {
         TopAppBar(
             title = { Text(text = stringResource(id = R.string.app_name)) },
         )
     }, bottomBar = {
-        OurNavigationBar(onNavigate)
+        if (showBottomBar) {
+            OurNavigationBar(onNavigate)
+        }
     }) { innerPadding ->
         Box(Modifier.padding(innerPadding)) {
             content()

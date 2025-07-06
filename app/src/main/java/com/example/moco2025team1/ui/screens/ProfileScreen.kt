@@ -1,5 +1,6 @@
 package com.example.moco2025team1.ui.screens
 
+import android.app.Application
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -12,6 +13,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.moco2025team1.ui.composables.ContactPicker
 import com.example.moco2025team1.viewmodel.ProfileViewModel
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
+import com.example.moco2025team1.LoginRoute
+import com.example.moco2025team1.viewmodel.SessionViewModel
 import kotlinx.coroutines.launch
 
 private enum class PickerMode { VIEW, ADD, REMOVE }
@@ -19,8 +24,16 @@ private enum class PickerMode { VIEW, ADD, REMOVE }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = viewModel()
+    sessionViewModel: SessionViewModel,
+    navController: NavHostController
 ) {
+    //val sessionViewModel = viewModel<SessionViewModel>()
+
+    val app = LocalContext.current.applicationContext as Application
+
+    val viewModel: ProfileViewModel =
+        viewModel(factory = ProfileViewModel.factory(app, sessionViewModel))
+
     val user     by viewModel.user.collectAsState()
     val friends  by viewModel.friends.collectAsState()
     val allUsers by viewModel.allUsers.collectAsState()
@@ -35,6 +48,7 @@ fun ProfileScreen(
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetPeekHeight = 0.dp,
+        snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) },
         sheetContent = {
             when (pickerMode) {
                 PickerMode.VIEW -> ContactPicker(
@@ -112,7 +126,13 @@ fun ProfileScreen(
 
             Button(
                 enabled = canSave,
-                onClick = viewModel::saveName,
+                onClick = {
+                    scope.launch {
+                        viewModel.saveName()
+                        scaffoldState.snackbarHostState
+                            .showSnackbar("Name successfully changed")
+                    }
+                },
                 modifier = Modifier
                     .align(Alignment.End)
                     .padding(top = 8.dp)
@@ -149,7 +169,14 @@ fun ProfileScreen(
             }
             Spacer(Modifier.height(8.dp))
 
-            Button(onClick = { /* TODO: logout */ },
+            Button(
+                onClick = {
+                    sessionViewModel.logout()
+                    navController.navigate(LoginRoute) {
+                        popUpTo(LoginRoute) { inclusive = true }
+                    }
+                },
+
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Logout")

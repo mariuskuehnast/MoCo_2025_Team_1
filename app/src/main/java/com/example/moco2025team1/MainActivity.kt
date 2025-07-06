@@ -1,16 +1,15 @@
 package com.example.moco2025team1
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -23,29 +22,36 @@ import com.example.moco2025team1.ui.screens.PromptSelectionScreen
 import com.example.moco2025team1.ui.theme.MOCO2025Team1Theme
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.moco2025team1.ui.screens.ContactSelectionScreen
-import com.example.moco2025team1.viewmodel.PromptViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.example.moco2025team1.ui.screens.LoginScreen
+import com.example.moco2025team1.viewmodel.SessionViewModel
 import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             val navController = rememberNavController()
-            val promptViewModel = viewModel<PromptViewModel>()
+            val sessionViewModel     = viewModel<SessionViewModel>()
 
             MOCO2025Team1Theme {
                 OurScaffold(
-                    onNavigate = { route ->
-                        navController.navigate(route = route)
-                    }
+                    showBottomBar = sessionViewModel.currentUser.collectAsState().value != null,
+                    onNavigate   = { navController.navigate(it) }
                 ) {
                     NavHost(
                         navController = navController,
-                        startDestination = HomeRoute
+                        startDestination = LoginRoute
                     ) {
+
+                        composable<LoginRoute> {
+                            LoginScreen(
+                                sessionViewModel = sessionViewModel,
+                                navController    = navController
+                            )
+                        }
+
                         composable<HomeRoute> {
                             val contacts = listOf(
                                 Contact("Hans"),
@@ -60,7 +66,7 @@ class MainActivity : ComponentActivity() {
                         composable<ProfileRoute> {
 //                            backStack ->
 //                            val name = backStack.toRoute<HomeRoute>().name
-                            ProfileScreen()
+                            ProfileScreen(sessionViewModel, navController)
                         }
                         composable<PromptSelectionRoute> {
                             PromptSelectionScreen(navController)
@@ -118,4 +124,8 @@ data object ProfileRoute : Route()
 
 @Serializable
 data object ContactSelectionRoute : Route()
+
+@Serializable
+data object LoginRoute : Route()
+
 
