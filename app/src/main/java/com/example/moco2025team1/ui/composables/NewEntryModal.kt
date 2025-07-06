@@ -16,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.moco2025team1.model.entities.Prompt
+import com.example.moco2025team1.ui.screens.CameraPermissionWrapper
 import com.example.moco2025team1.ui.screens.EntryComposer
 import com.example.moco2025team1.ui.screens.PromptSelectionScreen
 import kotlinx.serialization.Serializable
@@ -46,16 +47,18 @@ fun NewEntryModal(onDismissRequest: () -> Unit) {
                     towards = AnimatedContentTransitionScope.SlideDirection.End
                 )
             }) {
-                EntryComposer(
-                    prompt = prompt,
-                    onBack = {
-                        navController.navigate(PromptSelectionRoute)
-                    },
-                    onConfirm = {
-                        navController.navigate(
-                            ContactSelectionRoute
-                        )
-                    })
+                CameraPermissionWrapper {
+                    EntryComposer(
+                        prompt = prompt,
+                        onBack = {
+                            navController.navigate(PromptSelectionRoute)
+                        },
+                        onConfirm = {
+                            navController.navigate(
+                                ContactSelectionRoute
+                            )
+                        })
+                }
             }
             composable<ContactSelectionRoute> {
 
