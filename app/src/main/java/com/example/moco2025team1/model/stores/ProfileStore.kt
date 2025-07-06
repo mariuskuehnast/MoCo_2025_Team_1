@@ -39,6 +39,9 @@ class ProfileStore(
     suspend fun getFriendsOnce(userId: Long): List<User> =
         getUserWithFriendsFlow(userId).first().friends
 
+    fun getAllUsersFlow(): Flow<List<User>> =
+        userDao.getAllUsersFlow()
+
     suspend fun updateUserName(userId: Long, newName: String) =
         userDao.updateUserName(userId, newName)
 

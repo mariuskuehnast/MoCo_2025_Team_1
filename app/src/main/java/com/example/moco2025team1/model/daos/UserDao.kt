@@ -18,6 +18,9 @@ interface UserDao {
     @Query("SELECT * FROM users")
     suspend fun getAllUsers(): List<User>
 
+    @Query("SELECT * FROM users")
+    fun getAllUsersFlow(): Flow<List<User>>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertUser(user: User): Long
 
