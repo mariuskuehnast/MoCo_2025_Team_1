@@ -6,8 +6,9 @@ import java.util.Date
 
 @Entity(tableName = "entries")
 data class Entry(
-    @PrimaryKey(autoGenerate = true) val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
 
     val content: String,
+    val imageUri: String?,
     val createdAt: Date = Date()
 )

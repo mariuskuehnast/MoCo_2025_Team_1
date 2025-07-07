@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun TextInput() {
+fun TextInput(onValueChange: (value: String) -> Unit) {
     var value by remember { mutableStateOf("") }
 
     val textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground, fontSize = 16.sp)
@@ -34,7 +34,10 @@ fun TextInput() {
 
     BasicTextField(
         value,
-        onValueChange = { value = it },
+        onValueChange = {
+            value = it
+            onValueChange(it)
+        },
         modifier = Modifier
             .fillMaxSize()
             .focusRequester(focusRequester),
@@ -65,5 +68,5 @@ fun TextInput() {
 @Preview
 @Composable
 fun TextInputPreview() {
-    TextInput()
+    TextInput(onValueChange = {})
 }
