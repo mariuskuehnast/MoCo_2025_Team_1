@@ -15,6 +15,7 @@ fun ContactPicker(
     title: String,
     candidates: List<User>,
     initiallySelected: Set<Long> = emptySet(),
+    multipleSelection: Boolean = true,
     onConfirm: (List<User>) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -47,8 +48,13 @@ fun ContactPicker(
                     user = user,
                     checked = checked,
                     onCheckedChange = { isChecked ->
-                        if (isChecked) selectedIds.add(user.id)
-                        else selectedIds.remove(user.id)
+                        if (multipleSelection) {
+                            if (isChecked) selectedIds.add(user.id)
+                            else selectedIds.remove(user.id)
+                        } else {
+                            selectedIds.clear()
+                            if (isChecked) selectedIds.add(user.id)
+                        }
                     }
                 )
             }

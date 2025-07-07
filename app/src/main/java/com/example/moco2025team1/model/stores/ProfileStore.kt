@@ -50,4 +50,10 @@ class ProfileStore(
 
     suspend fun removeFriend(userId: Long, friendId: Long) =
         userDao.removeFriend(userId, friendId)
+
+    suspend fun createUser(name: String): User {
+        val newId = userDao.insertUser(User(userName = name))
+        return userDao.getUserById(newId)!!
+    }
+
 }

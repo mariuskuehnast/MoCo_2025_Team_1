@@ -2,30 +2,39 @@ package com.example.moco2025team1.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.moco2025team1.model.database.AppDatabase
 import com.example.moco2025team1.model.entities.User
-import com.example.moco2025team1.model.entities.UserWithFriends
 import com.example.moco2025team1.model.stores.ProfileStore
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(app: Application) : AndroidViewModel(app) {
+class ProfileViewModel
+private constructor(
+    app: Application,
+    private val currentUser: StateFlow<User?>
+) : AndroidViewModel(app) {
 
-    private val db = AppDatabase.getInstance(app)
-    private val profileStore = ProfileStore(db.userDao())
-    private val _userWithFriends = MutableStateFlow<UserWithFriends?>(null)
-    val userWithFriends: StateFlow<UserWithFriends?> = _userWithFriends
+    private val store = ProfileStore(AppDatabase.getInstance(app).userDao())
 
-    // until we have real auth, we'll just load userId = 1
-    private val currentUserId: Long = 1L
+    val user: StateFlow<User?> =
+        currentUser.flatMapLatest { u ->
+            if (u == null) flowOf(null)
+            else store.getUserWithFriendsFlow(u.id).map { it.user }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    val friends: StateFlow<List<User>> =
+        currentUser.flatMapLatest { u ->
+            if (u == null) flowOf(emptyList())
+            else store.getFriendsFlow(u.id)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val allUsers: StateFlow<List<User>> =
+        store.getAllUsersFlow()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     private val _nameInput = MutableStateFlow("")
     val nameInput: StateFlow<String> = _nameInput.asStateFlow()
@@ -34,73 +43,53 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
         nameInput.map { it.isNotBlank() }
             .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-    val user: StateFlow<User?> =
-        profileStore
-            .getUserWithFriendsFlow(currentUserId)
-            .map { it.user }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = null
-            )
-
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            profileStore.init()
-        }
-
         viewModelScope.launch {
-            user
-                .filterNotNull()
-                .collect { user ->
-                    _nameInput.value = user.userName
-                }
+            user.filterNotNull().collect { _nameInput.value = it.userName }
         }
     }
 
-    fun onNameInputChange(newText: String) {
-        _nameInput.value = newText
-    }
+    fun onNameInputChange(newText: String) { _nameInput.value = newText }
 
     fun saveName() {
+        val u = currentUser.value ?: return
         if (canSaveName.value) {
-            updateUserName(_nameInput.value)
+            viewModelScope.launch(Dispatchers.IO) {
+                store.updateUserName(u.id, _nameInput.value)
+            }
         }
     }
 
-    val friends: StateFlow<List<User>> =
-        profileStore
-            .getFriendsFlow(currentUserId)
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = emptyList()
-            )
-
-    val allUsers: StateFlow<List<User>> =
-        profileStore
-            .getAllUsersFlow()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = emptyList()
-            )
-
     fun updateUserName(newName: String) {
+        val id = currentUser.value?.id ?: return
         viewModelScope.launch(Dispatchers.IO) {
-            profileStore.updateUserName(currentUserId, newName)
+            store.updateUserName(id, newName)
         }
     }
 
     fun addFriend(friendId: Long) {
+        val id = currentUser.value?.id ?: return
         viewModelScope.launch(Dispatchers.IO) {
-            profileStore.addFriend(currentUserId, friendId)
+            store.addFriend(id, friendId)
         }
     }
 
     fun removeFriend(friendId: Long) {
+        val id = currentUser.value?.id ?: return
         viewModelScope.launch(Dispatchers.IO) {
-            profileStore.removeFriend(currentUserId, friendId)
+            store.removeFriend(id, friendId)
+        }
+    }
+
+    // own factory, because viewmodel can't instantiate an object with the parameters we need
+    companion object {
+        fun factory(
+            app: Application,
+            session: SessionViewModel
+        ) = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T =
+                ProfileViewModel(app, session.currentUser) as T
         }
     }
 }
