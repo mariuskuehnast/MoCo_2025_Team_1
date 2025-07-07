@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,12 +19,12 @@ import com.example.moco2025team1.ui.composables.ContactCard
 import com.example.moco2025team1.ui.composables.OurScaffold
 import com.example.moco2025team1.ui.screens.HomeScreen
 import com.example.moco2025team1.ui.screens.ProfileScreen
-import com.example.moco2025team1.ui.screens.PromptSelectionScreen
 import com.example.moco2025team1.ui.theme.MOCO2025Team1Theme
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.moco2025team1.ui.screens.ContactSelectionScreen
 import com.example.moco2025team1.ui.screens.LoginScreen
 import com.example.moco2025team1.viewmodel.SessionViewModel
+import com.example.moco2025team1.viewmodel.PromptViewModel
 import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
@@ -69,7 +70,7 @@ class MainActivity : ComponentActivity() {
                             ProfileScreen(sessionViewModel, navController)
                         }
                         composable<PromptSelectionRoute> {
-                            PromptSelectionScreen(navController)
+//                            PromptSelectionScreen(navController)
                         }
                         composable<NewEntryRoute> {
 //                            NewEntryScreen()
