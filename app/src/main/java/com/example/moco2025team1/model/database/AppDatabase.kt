@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.moco2025team1.model.daos.EntryDao
 import com.example.moco2025team1.model.daos.PromptDao
 import com.example.moco2025team1.model.entities.Entry
 import com.example.moco2025team1.model.entities.Prompt
@@ -13,6 +14,7 @@ import com.example.moco2025team1.model.entities.Prompt
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun promptDao(): PromptDao
+    abstract fun entryDao(): EntryDao
 
     companion object {
         private const val DB_NAME = "appstore"

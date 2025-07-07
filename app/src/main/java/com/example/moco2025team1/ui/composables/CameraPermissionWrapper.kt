@@ -1,4 +1,4 @@
-package com.example.moco2025team1.ui.screens
+package com.example.moco2025team1.ui.composables
 
 import android.Manifest
 import android.content.pm.PackageManager

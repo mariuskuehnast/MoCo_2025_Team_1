@@ -1,5 +1,6 @@
 package com.example.moco2025team1.ui.composables
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
@@ -12,13 +13,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.moco2025team1.model.entities.Prompt
-import com.example.moco2025team1.ui.screens.CameraPermissionWrapper
 import com.example.moco2025team1.ui.screens.EntryComposer
 import com.example.moco2025team1.ui.screens.PromptSelectionScreen
+import com.example.moco2025team1.viewmodel.EntryViewModel
 import kotlinx.serialization.Serializable
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,6 +29,11 @@ fun NewEntryModal(onDismissRequest: () -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var prompt by remember { mutableStateOf<Prompt?>(null) }
     val navController = rememberNavController()
+
+    var content by remember { mutableStateOf("") }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val entryViewModel = viewModel<EntryViewModel>()
 
     ModalBottomSheet(sheetState = sheetState, onDismissRequest = onDismissRequest) {
         NavHost(navController, startDestination = PromptSelectionRoute) {
@@ -53,7 +60,12 @@ fun NewEntryModal(onDismissRequest: () -> Unit) {
                         onBack = {
                             navController.navigate(PromptSelectionRoute)
                         },
-                        onConfirm = {
+                        onConfirm = { newContent, newImageUri ->
+                            content = newContent
+                            imageUri = newImageUri
+
+                            entryViewModel.insertEntry(content, imageUri)
+
                             navController.navigate(
                                 ContactSelectionRoute
                             )

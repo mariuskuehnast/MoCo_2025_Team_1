@@ -1,9 +1,7 @@
 package com.example.moco2025team1.ui.screens
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -13,8 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -60,10 +55,11 @@ import java.time.format.FormatStyle
 fun EntryComposer(
     prompt: Prompt?,
     onBack: () -> Unit,
-    onConfirm: () -> Unit,
+    onConfirm: (text: String, imageUri: Uri?) -> Unit,
     context: Context = LocalContext.current
 ) {
     val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+    var textInput by remember { mutableStateOf("") }
 
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -94,7 +90,9 @@ fun EntryComposer(
             IconButton(modifier = Modifier.align(Alignment.CenterStart), onClick = { onBack() }) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, "Close")
             }
-            IconButton(modifier = Modifier.align(Alignment.CenterEnd), onClick = { onConfirm() }) {
+            IconButton(
+                modifier = Modifier.align(Alignment.CenterEnd),
+                onClick = { onConfirm(textInput, imageUri) }) {
                 Icon(Icons.AutoMirrored.Filled.Send, "Send")
             }
             Column(
@@ -159,12 +157,15 @@ fun EntryComposer(
             }
         }
         HorizontalDivider()
-        TextInput()
+        TextInput(onValueChange = { textInput = it })
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun EntryComposerPreview() {
-    EntryComposer(Prompt(content = "Test Prompt"), onBack = {}, onConfirm = {})
+    EntryComposer(
+        Prompt(content = "Test Prompt"),
+        onBack = {},
+        onConfirm = { content, imageUri -> })
 }
