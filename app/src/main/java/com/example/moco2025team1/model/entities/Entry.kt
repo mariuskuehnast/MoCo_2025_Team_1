@@ -9,6 +9,6 @@ data class Entry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0L,
 
     val content: String,
-    val imageUri: String?,
+    val imageUri: String? = null,
     val createdAt: Date = Date()
 )

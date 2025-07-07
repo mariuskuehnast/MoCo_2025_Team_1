@@ -17,7 +17,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.moco2025team1.model.entities.Entry
 import com.example.moco2025team1.model.entities.Prompt
+import com.example.moco2025team1.ui.screens.ContactSelectionScreen
 import com.example.moco2025team1.ui.screens.EntryComposer
 import com.example.moco2025team1.ui.screens.PromptSelectionScreen
 import com.example.moco2025team1.viewmodel.EntryViewModel
@@ -64,8 +66,6 @@ fun NewEntryModal(onDismissRequest: () -> Unit) {
                             content = newContent
                             imageUri = newImageUri
 
-                            entryViewModel.insertEntry(content, imageUri)
-
                             navController.navigate(
                                 ContactSelectionRoute
                             )
@@ -73,7 +73,15 @@ fun NewEntryModal(onDismissRequest: () -> Unit) {
                 }
             }
             composable<ContactSelectionRoute> {
-
+                ContactSelectionScreen(
+                    entry = Entry(
+                        content = content,
+                        imageUri = imageUri.toString()
+                    )
+                ) { _, contacts ->
+                    entryViewModel.insertEntry(content, imageUri)
+                    onDismissRequest()
+                }
             }
         }
     }
