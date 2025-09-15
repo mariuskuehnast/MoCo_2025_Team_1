@@ -1,43 +1,33 @@
 package com.example.moco2025team1.ui.screens
 
+import android.app.Application
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.moco2025team1.model.entities.Contact
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.moco2025team1.ui.composables.ContactCard
-import com.example.moco2025team1.ui.composables.OurScaffold
-
+import com.example.moco2025team1.viewmodel.HomeViewModel
+import com.example.moco2025team1.viewmodel.SessionViewModel
 
 @Composable
-fun HomeScreen(contacts: List<Contact>, onContactClick: (Int) -> Unit = {}) {
-    LazyColumn {
-        itemsIndexed(contacts) { index, contact ->
-            ContactCard(contact.username, callClick = { onContactClick(index) })
-        }
+fun HomeScreen(
+    sessionViewModel: SessionViewModel,
+    onContactClick: (Int) -> Unit = {}
+) {
+    val app = LocalContext.current.applicationContext as Application
+    val vm: HomeViewModel = viewModel(factory = HomeViewModel.factory(app, sessionViewModel))
+    val friends by vm.friends.collectAsState()
+
+    if (friends.isEmpty()) {
+        Text("You have no friends yet.")
+        return
     }
-}
 
-@Composable
-@Preview(showBackground = true)
-fun HomeScreenPreview() {
-    HomeScreen(
-        listOf(
-            Contact("Hans", "Hansen"),
-            Contact("Peter", "Petersen"),
-        )
-    )
-}
-
-@Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun HomeScreenScaffoldPreview() {
-    OurScaffold() {
-        HomeScreen(
-            listOf(
-                Contact("Hans", "Hansen"),
-                Contact("Peter", "Petersen"),
-            )
-        )
+    LazyColumn {
+        itemsIndexed(friends) { index, user ->
+            ContactCard(user.userName) { onContactClick(index) }
+        }
     }
 }

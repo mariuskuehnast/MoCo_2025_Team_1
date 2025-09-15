@@ -54,16 +54,13 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable<HomeRoute> {
-                            val contacts = listOf(
-                                Contact("Hans"),
-                                Contact("Peter"),
-                            )
                             HomeScreen(
-                                contacts,
-                                onContactClick = {
+                                sessionViewModel = sessionViewModel,
+                                onContactClick = { index ->
                                 }
                             )
                         }
+
                         composable<ProfileRoute> {
 //                            backStack ->
 //                            val name = backStack.toRoute<HomeRoute>().name
