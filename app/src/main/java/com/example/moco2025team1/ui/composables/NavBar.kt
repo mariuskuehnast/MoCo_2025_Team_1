@@ -1,8 +1,12 @@
 package com.example.moco2025team1.ui.composables
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.NoteAdd
+import androidx.compose.material.icons.automirrored.outlined.NoteAdd
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
@@ -64,7 +68,7 @@ data object Home :
     BottomBarItem("Home", HomeRoute, Icons.Filled.Home, Icons.Outlined.Home)
 
 data object NewEntry :
-    BottomBarItem("New Entry", PromptSelectionRoute, Icons.Filled.Share, Icons.Filled.Share)
+    BottomBarItem("New Entry", PromptSelectionRoute, Icons.AutoMirrored.Filled.NoteAdd, Icons.AutoMirrored.Outlined.NoteAdd)
 
 data object Profile :
     BottomBarItem("Profile", ProfileRoute, Icons.Filled.Person, Icons.Outlined.Person)
