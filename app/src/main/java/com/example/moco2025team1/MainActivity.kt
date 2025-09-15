@@ -4,27 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.moco2025team1.model.entities.Contact
-import com.example.moco2025team1.ui.composables.ContactCard
 import com.example.moco2025team1.ui.composables.OurScaffold
+import com.example.moco2025team1.ui.screens.ContactSelectionScreen
 import com.example.moco2025team1.ui.screens.HomeScreen
+import com.example.moco2025team1.ui.screens.LoginScreen
 import com.example.moco2025team1.ui.screens.ProfileScreen
 import com.example.moco2025team1.ui.theme.MOCO2025Team1Theme
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.moco2025team1.ui.screens.ContactSelectionScreen
-import com.example.moco2025team1.ui.screens.LoginScreen
 import com.example.moco2025team1.viewmodel.SessionViewModel
-import com.example.moco2025team1.viewmodel.PromptViewModel
 import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
@@ -36,8 +29,18 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val sessionViewModel     = viewModel<SessionViewModel>()
 
+            val backStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = backStackEntry?.destination?.route
+
+            val titles = mapOf(
+                HomeRoute::class.qualifiedName!! to "Home",
+                ProfileRoute::class.qualifiedName!! to "Profile",
+            )
+            val currentTitle = titles[currentRoute]
+
             MOCO2025Team1Theme {
                 OurScaffold(
+                    title = currentTitle,
                     showBottomBar = sessionViewModel.currentUser.collectAsState().value != null,
                     onNavigate   = { navController.navigate(it) }
                 ) {
@@ -81,28 +84,6 @@ class MainActivity : ComponentActivity() {
 
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Column {
-        Text(
-            text = "Hello $name!",
-            modifier = modifier
-        )
-        ContactCard("Max") {}
-        ContactCard("Max") {}
-        ContactCard("Max") {}
-        ContactCard("Max") {}
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MOCO2025Team1Theme {
-        Greeting("Android")
     }
 }
 

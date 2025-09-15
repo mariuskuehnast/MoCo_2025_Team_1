@@ -10,13 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.moco2025team1.R
 import com.example.moco2025team1.Route
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,39 +18,22 @@ import com.example.moco2025team1.Route
 fun OurScaffold(
     onNavigate: (Route) -> Unit = {},
     showBottomBar: Boolean = true,
+    title: String? = null,
     content: @Composable () -> Unit = {}
 ) {
-    Scaffold(topBar = {
-        TopAppBar(
-            title = { Text(text = stringResource(id = R.string.app_name)) },
-        )
-    }, bottomBar = {
-        if (showBottomBar) {
-            OurNavigationBar(onNavigate)
-        }
-    }) { innerPadding ->
-        Box(Modifier.padding(innerPadding)) {
-            content()
-        }
-    }
-}
-
-@Composable
-@Preview
-fun OurScaffoldPreview() {
-    OurScaffold {
+    Scaffold(
+        topBar = {
+            if (title != null) {
+                TopAppBar(title = { Text(title) })
+            }
+        },
+        bottomBar = { if (showBottomBar) OurNavigationBar(onNavigate) }
+    ) { innerPadding ->
         Box(
             Modifier
                 .fillMaxSize()
-                .background(Color.Magenta)
-        ) {
-            Text(
-                "our content goes here",
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .rotate(-45f)
-            )
-        }
+                .background(MaterialTheme.colorScheme.background)
+                .padding(innerPadding)
+        ) { content() }
     }
 }
