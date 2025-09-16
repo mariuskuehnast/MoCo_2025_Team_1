@@ -45,11 +45,17 @@ class ProfileStore(
     suspend fun updateUserName(userId: Long, newName: String) =
         userDao.updateUserName(userId, newName)
 
-    suspend fun addFriend(userId: Long, friendId: Long) =
+    suspend fun addFriend(userId: Long, friendId: Long) {
+        if (userId == friendId) return
         userDao.addFriendCrossRef(UserFriendCrossRef(userId, friendId))
+        userDao.addFriendCrossRef(UserFriendCrossRef(friendId, userId))
+    }
 
-    suspend fun removeFriend(userId: Long, friendId: Long) =
+    suspend fun removeFriend(userId: Long, friendId: Long) {
+        if (userId == friendId) return
         userDao.removeFriend(userId, friendId)
+        userDao.removeFriend(friendId, userId)
+    }
 
     suspend fun createUser(name: String): User {
         val newId = userDao.insertUser(User(userName = name))
