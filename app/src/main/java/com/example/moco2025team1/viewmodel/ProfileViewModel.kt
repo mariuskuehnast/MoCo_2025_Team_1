@@ -8,28 +8,30 @@ import androidx.lifecycle.viewModelScope
 import com.example.moco2025team1.model.database.AppDatabase
 import com.example.moco2025team1.model.entities.User
 import com.example.moco2025team1.model.stores.ProfileStore
+import com.example.moco2025team1.model.stores.SessionStore
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class ProfileViewModel
-private constructor(
-    app: Application,
-    private val currentUser: StateFlow<User?>
+@OptIn(ExperimentalCoroutinesApi::class)
+class ProfileViewModel(
+    app: Application
 ) : AndroidViewModel(app) {
+    private val sessionStore = SessionStore(app.applicationContext)
 
     private val store = ProfileStore(AppDatabase.getInstance(app).userDao())
 
     val user: StateFlow<User?> =
-        currentUser.flatMapLatest { u ->
-            if (u == null) flowOf(null)
-            else store.getUserWithFriendsFlow(u.id).map { it.user }
+        sessionStore.userId.flatMapLatest { userId ->
+            if (userId == null) flowOf(null)
+            else store.getUserWithFriendsFlow(userId).map { it.user }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     val friends: StateFlow<List<User>> =
-        currentUser.flatMapLatest { u ->
-            if (u == null) flowOf(emptyList())
-            else store.getFriendsFlow(u.id)
+        sessionStore.userId.flatMapLatest { userId ->
+            if (userId == null) flowOf(emptyList())
+            else store.getFriendsFlow(userId)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val allUsers: StateFlow<List<User>> =
@@ -49,47 +51,45 @@ private constructor(
         }
     }
 
-    fun onNameInputChange(newText: String) { _nameInput.value = newText }
+    fun onNameInputChange(newText: String) {
+        _nameInput.value = newText
+    }
 
     fun saveName() {
-        val u = currentUser.value ?: return
         if (canSaveName.value) {
             viewModelScope.launch(Dispatchers.IO) {
-                store.updateUserName(u.id, _nameInput.value)
+                val userId = sessionStore.userId.first()
+                if (userId != null) {
+                    store.updateUserName(userId, _nameInput.value)
+                }
             }
         }
     }
 
     fun updateUserName(newName: String) {
-        val id = currentUser.value?.id ?: return
         viewModelScope.launch(Dispatchers.IO) {
-            store.updateUserName(id, newName)
+            val userId = sessionStore.userId.first()
+            if (userId != null) {
+                store.updateUserName(userId, newName)
+            }
         }
     }
 
     fun addFriend(friendId: Long) {
-        val id = currentUser.value?.id ?: return
         viewModelScope.launch(Dispatchers.IO) {
-            store.addFriend(id, friendId)
+            val userId = sessionStore.userId.first()
+            if (userId != null) {
+                store.addFriend(userId, friendId)
+            }
         }
     }
 
     fun removeFriend(friendId: Long) {
-        val id = currentUser.value?.id ?: return
         viewModelScope.launch(Dispatchers.IO) {
-            store.removeFriend(id, friendId)
-        }
-    }
-
-    // own factory, because viewmodel can't instantiate an object with the parameters we need
-    companion object {
-        fun factory(
-            app: Application,
-            session: SessionViewModel
-        ) = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                ProfileViewModel(app, session.currentUser) as T
+            val userId = sessionStore.userId.first()
+            if (userId != null) {
+                store.removeFriend(userId, friendId)
+            }
         }
     }
 }

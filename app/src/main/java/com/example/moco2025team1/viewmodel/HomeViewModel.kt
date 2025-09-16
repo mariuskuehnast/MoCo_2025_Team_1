@@ -8,11 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.moco2025team1.model.database.AppDatabase
 import com.example.moco2025team1.model.entities.User
 import com.example.moco2025team1.model.stores.ProfileStore
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModel private constructor(
     app: Application,
-    private val currentUser: StateFlow<User?>
+    currentUser: StateFlow<User?>
 ) : AndroidViewModel(app) {
 
     private val store = ProfileStore(AppDatabase.getInstance(app).userDao())

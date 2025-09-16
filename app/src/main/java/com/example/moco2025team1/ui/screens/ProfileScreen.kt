@@ -27,12 +27,7 @@ fun ProfileScreen(
     sessionViewModel: SessionViewModel,
     navController: NavHostController
 ) {
-    //val sessionViewModel = viewModel<SessionViewModel>()
-
-    val app = LocalContext.current.applicationContext as Application
-
-    val viewModel: ProfileViewModel =
-        viewModel(factory = ProfileViewModel.factory(app, sessionViewModel))
+    val viewModel: ProfileViewModel = viewModel()
 
     val user     by viewModel.user.collectAsState()
     val friends  by viewModel.friends.collectAsState()
