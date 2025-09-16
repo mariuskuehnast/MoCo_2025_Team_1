@@ -86,6 +86,9 @@ sealed class Route
 data object HomeRoute : Route()
 
 @Serializable
+data object PromptSelectionRoute : Route()
+
+@Serializable
 data object ProfileRoute : Route()
 
 @Serializable
