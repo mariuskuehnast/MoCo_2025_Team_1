@@ -11,8 +11,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.moco2025team1.ui.composables.OurScaffold
 import com.example.moco2025team1.ui.screens.ContactSelectionScreen
+import com.example.moco2025team1.ui.screens.EntryViewerScreen
 import com.example.moco2025team1.ui.screens.HomeScreen
 import com.example.moco2025team1.ui.screens.LoginScreen
 import com.example.moco2025team1.ui.screens.ProfileScreen
@@ -60,6 +62,7 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(
                                 sessionViewModel = sessionViewModel,
                                 onContactClick = { index ->
+                                    navController.navigate(EntryViewerRoute(2))
                                 }
                             )
                         }
@@ -77,6 +80,10 @@ class MainActivity : ComponentActivity() {
                         }
                         composable<ContactSelectionRoute> {
                             ContactSelectionScreen()
+                        }
+                        composable<EntryViewerRoute> { backstack ->
+                            val entryId = backstack.toRoute<EntryViewerRoute>().entryId
+                            EntryViewerScreen(entryId)
                         }
                     }
 
@@ -106,5 +113,8 @@ data object ContactSelectionRoute : Route()
 
 @Serializable
 data object LoginRoute : Route()
+
+@Serializable
+data class EntryViewerRoute(val entryId: Long) : Route()
 
 

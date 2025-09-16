@@ -8,6 +8,7 @@ import com.example.moco2025team1.model.database.AppDatabase
 import com.example.moco2025team1.model.entities.Entry
 import com.example.moco2025team1.model.stores.EntryStore
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class EntryViewModel(app: Application) : AndroidViewModel(app) {
@@ -20,5 +21,9 @@ class EntryViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) {
             entryStore.insertEntry(Entry(content = content, imageUri = imageUri?.toString()))
         }
+    }
+
+    fun getEntryById(id: Long): Flow<Entry?> {
+        return entryStore.getEntryById(id)
     }
 }

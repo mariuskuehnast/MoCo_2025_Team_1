@@ -2,6 +2,7 @@ package com.example.moco2025team1.model.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 import java.util.Date
 
 @Entity(tableName = "entries")
