@@ -59,8 +59,8 @@ class MainActivity : ComponentActivity() {
                         composable<HomeRoute> {
                             HomeScreen(
                                 sessionViewModel = sessionViewModel,
-                                onContactClick = { index ->
-                                    navController.navigate(EntryViewerRoute(2))
+                                onOpenEntry = { entryId ->
+                                    navController.navigate(EntryViewerRoute(entryId))
                                 }
                             )
                         }
@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable<EntryViewerRoute> { backstack ->
                             val entryId = backstack.toRoute<EntryViewerRoute>().entryId
-                            EntryViewerScreen(entryId)
+                            EntryViewerScreen(entryId, sessionViewModel)
                         }
                     }
 

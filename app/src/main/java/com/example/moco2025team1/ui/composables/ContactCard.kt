@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Markunread
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +23,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ContactCard(
-    username: String, modifier: Modifier = Modifier, callClick: () -> Unit,
+    userName: String,
+    modifier: Modifier = Modifier,
+    isUnlockAvailable: Boolean = false,
+    callClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -31,17 +35,20 @@ fun ContactCard(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(Modifier.size(10.dp))
-        Avatar(username.first())
+        Avatar(userName.first())
         Spacer(Modifier.size(10.dp))
-        Column(Modifier.weight(3f)) {
-            Text(username)
+        Column(modifier = Modifier.weight(1f)) {
+            Text(userName, style = MaterialTheme.typography.titleMedium)
+            Spacer(Modifier.size(2.dp))
+            Text("", style = MaterialTheme.typography.bodySmall)
         }
-        IconButton(onClick = callClick) {
+        IconButton(onClick = callClick, enabled = isUnlockAvailable) {
             Icon(
-                Icons.Filled.Lock, contentDescription = "", tint = MaterialTheme.colorScheme.primary
+                imageVector = if (isUnlockAvailable) Icons.Filled.Markunread else Icons.Filled.Lock,
+                contentDescription = if (isUnlockAvailable) "View entry" else "No entry",
+                tint = MaterialTheme.colorScheme.primary
             )
         }
-
     }
 }
 

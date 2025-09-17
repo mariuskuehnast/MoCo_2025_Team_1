@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -23,6 +24,8 @@ import com.example.moco2025team1.ui.screens.ContactSelectionScreen
 import com.example.moco2025team1.ui.screens.EntryComposer
 import com.example.moco2025team1.ui.screens.PromptSelectionScreen
 import com.example.moco2025team1.viewmodel.EntryViewModel
+import com.example.moco2025team1.viewmodel.SessionViewModel
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,6 +39,8 @@ fun NewEntryModal(onDismissRequest: () -> Unit) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     val entryViewModel = viewModel<EntryViewModel>()
+    val sessionViewModel = viewModel<SessionViewModel>()
+    val scope = rememberCoroutineScope()
 
     ModalBottomSheet(sheetState = sheetState, onDismissRequest = onDismissRequest) {
         NavHost(navController, startDestination = PromptSelectionRoute) {
@@ -79,7 +84,24 @@ fun NewEntryModal(onDismissRequest: () -> Unit) {
                         imageUri = imageUri.toString()
                     )
                 ) { _, contacts ->
-                    entryViewModel.insertEntry(content, imageUri)
+                    val sender = sessionViewModel.currentUser.value
+                    val senderId = sender?.id
+                    val senderUserName = sender?.userName ?: ""
+                    val recipientId = contacts.firstOrNull()?.id
+                    val promptText = prompt?.content
+
+                    if (senderId != null && recipientId != null) {
+                        scope.launch {
+                            val newId = entryViewModel.insertEntry(
+                                content = content,
+                                imageUri = imageUri,
+                                senderId = senderId,
+                                senderUserName = senderUserName,
+                                prompt = promptText
+                            )
+                            entryViewModel.sendEntry(newId, recipientId)
+                        }
+                    }
                     onDismissRequest()
                 }
             }

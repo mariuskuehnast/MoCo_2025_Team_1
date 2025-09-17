@@ -18,9 +18,9 @@ import com.example.moco2025team1.model.entities.UserFriendCrossRef
         Prompt::class,
         Entry::class,
         User::class,
-        UserFriendCrossRef::class
+        UserFriendCrossRef::class,
     ],
-    version = 5
+    version = 7
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -40,7 +40,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     DB_NAME
-                ).fallbackToDestructiveMigration(false).build().also { INSTANCE = it }
+                ).fallbackToDestructiveMigration(true).build().also { INSTANCE = it }
             }
         }
     }

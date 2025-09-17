@@ -17,13 +17,33 @@ class EntryViewModel(app: Application) : AndroidViewModel(app) {
     private val entryDao = db.entryDao()
     private val entryStore = EntryStore(entryDao)
 
-    fun insertEntry(content: String, imageUri: Uri?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            entryStore.insertEntry(Entry(content = content, imageUri = imageUri?.toString()))
-        }
+    suspend fun insertEntry(
+        content: String,
+        imageUri: Uri?,
+        senderId: Long,
+        senderUserName: String,
+        prompt: String?
+    ): Long {
+        return entryStore.insertEntry(
+            Entry(
+                content = content,
+                imageUri = imageUri?.toString(),
+                senderId = senderId,
+                senderUserName = senderUserName,
+                prompt = prompt
+            )
+        )
     }
 
     fun getEntryById(id: Long): Flow<Entry?> {
         return entryStore.getEntryById(id)
+    }
+
+    suspend fun sendEntry(entryId: Long, recipientId: Long) {
+        entryStore.send(entryId, recipientId)
+    }
+
+    suspend fun markViewedOnce(entryId: Long) {
+        entryStore.markViewed(entryId)
     }
 }

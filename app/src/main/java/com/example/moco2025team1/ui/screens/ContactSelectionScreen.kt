@@ -22,7 +22,7 @@ import com.example.moco2025team1.viewmodel.ProfileViewModel
 @Composable
 fun ContactSelectionScreen(
     viewModel: ProfileViewModel = viewModel(),
-    entry: Entry = Entry(1, "moin"),
+    entry: Entry? = null,
     onSendSelected: (Entry, List<User>) -> Unit = { _, _ -> /* TODO */ }
 ) {
     val friendList by viewModel.friends.collectAsState()
@@ -63,8 +63,9 @@ fun ContactSelectionScreen(
 
         Button(
             onClick = {
-                onSendSelected(entry, selectedUsers.toList())
-                Log.d("ContactSelection", "Entry=$entry, Users=$selectedUsers")
+                entry?.let {
+                    onSendSelected(it, selectedUsers.toList())
+                }
             },
             enabled = selectedUsers.isNotEmpty(),
             modifier = Modifier

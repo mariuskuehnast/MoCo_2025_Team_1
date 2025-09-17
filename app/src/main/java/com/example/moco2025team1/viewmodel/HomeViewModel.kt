@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.moco2025team1.model.database.AppDatabase
 import com.example.moco2025team1.model.entities.User
+import com.example.moco2025team1.model.stores.EntryStore
 import com.example.moco2025team1.model.stores.ProfileStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -17,15 +18,26 @@ class HomeViewModel private constructor(
     currentUser: StateFlow<User?>
 ) : AndroidViewModel(app) {
 
-    private val store = ProfileStore(AppDatabase.getInstance(app).userDao())
+    private val db = AppDatabase.getInstance(app)
+    private val store = ProfileStore(db.userDao())
+    private val entryStore = EntryStore(db.entryDao())
 
     val friends: StateFlow<List<User>> =
         currentUser
-            .flatMapLatest { u ->
-                if (u == null) flowOf(emptyList())
-                else store.getFriendsFlow(u.id)
+            .flatMapLatest { user ->
+                if (user == null) flowOf(emptyList())
+                else store.getFriendsFlow(user.id)
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val pendingBySender: StateFlow<Map<Long, Long>> =
+        currentUser
+            .flatMapLatest { user ->
+                if (user == null) flowOf(emptyList())
+                else entryStore.getPendingEntriesFromFriends(user.id)
+            }
+            .map { pendingEntries -> pendingEntries.associate { it.senderId to it.latestEntryId } }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyMap())
 
     companion object {
         fun factory(app: Application, session: SessionViewModel) =

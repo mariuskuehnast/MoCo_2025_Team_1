@@ -20,11 +20,12 @@ import com.example.moco2025team1.viewmodel.SessionViewModel
 @Composable
 fun HomeScreen(
     sessionViewModel: SessionViewModel,
-    onContactClick: (Int) -> Unit = {}
+    onOpenEntry: (Long) -> Unit = {}
 ) {
     val app = LocalContext.current.applicationContext as Application
     val vm: HomeViewModel = viewModel(factory = HomeViewModel.factory(app, sessionViewModel))
     val friends by vm.friends.collectAsState()
+    val pendingBySender by vm.pendingBySender.collectAsState()
 
     if (friends.isEmpty()) {
         Box(
@@ -60,7 +61,15 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         itemsIndexed(friends) { index, user ->
-            ContactCard(user.userName) { onContactClick(index) }
+            val latestId = pendingBySender[user.id]
+            val hasPending = latestId != null
+
+            ContactCard(
+                userName = user.userName,
+                isUnlockAvailable = hasPending
+            ) {
+                if (hasPending) onOpenEntry(latestId)
+            }
         }
     }
 }

@@ -9,7 +9,12 @@ import java.util.Date
 data class Entry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0L,
 
+    val senderUserName: String? = null,
+    val prompt: String? = null,
     val content: String,
     val imageUri: String? = null,
-    val createdAt: Date = Date()
+    val createdAt: Date = Date(),
+    val senderId: Long? = null,
+    val recipientId: Long? = null,
+    val viewedAt: Date? = null
 )

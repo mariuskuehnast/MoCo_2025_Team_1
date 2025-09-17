@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -31,13 +33,28 @@ import coil3.compose.rememberAsyncImagePainter
 import com.example.moco2025team1.model.entities.Entry
 import com.example.moco2025team1.ui.composables.Avatar
 import com.example.moco2025team1.viewmodel.EntryViewModel
+import com.example.moco2025team1.viewmodel.SessionViewModel
 
 @Composable
-fun EntryViewerScreen(entryId: Long, entryViewModel: EntryViewModel = viewModel()) {
+fun EntryViewerScreen(
+    entryId: Long,
+    sessionViewModel: SessionViewModel,
+    entryViewModel: EntryViewModel = viewModel()
+) {
     val entry by entryViewModel.getEntryById(entryId).collectAsState(null)
 
-    entry?.let { EntryViewerScreen(it) }
+    if (entry == null) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else {
+        LaunchedEffect(entryId) {
+            entryViewModel.markViewedOnce(entryId)
+        }
+        EntryViewerScreen(entry = entry!!)
+    }
 }
+
 
 @Composable
 fun EntryViewerScreen(entry: Entry) {
@@ -58,8 +75,8 @@ fun EntryViewerScreen(entry: Entry) {
                 .padding(30.dp, 10.dp),
             horizontalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-            Avatar('A')
-            Text("Alice", style = MaterialTheme.typography.titleMedium)
+            Avatar((entry.senderUserName?.firstOrNull() ?: '?'))
+            Text(entry.senderUserName ?: "", style = MaterialTheme.typography.titleMedium)
         }
         Column(
             modifier = Modifier
@@ -77,7 +94,7 @@ fun EntryViewerScreen(entry: Entry) {
             verticalArrangement = Arrangement.spacedBy(15.dp, alignment = Alignment.Bottom)
         ) {
             Text(
-                "How did you take care of yourself today?",
+                entry.prompt ?: "",
                 color = Color.White,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
