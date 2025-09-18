@@ -29,6 +29,7 @@ fun OurNavigationBar(onNavigate: (route: Route) -> Unit = {}) {
     var currentRoute: Route by remember { mutableStateOf(HomeRoute) }
     val items = listOf(Home, NewEntry, Profile)
     var isSheetOpen by remember { mutableStateOf(false) }
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     NavigationBar {
         items.forEach { item ->
@@ -49,7 +50,14 @@ fun OurNavigationBar(onNavigate: (route: Route) -> Unit = {}) {
     }
 
     if (isSheetOpen) {
-        NewEntryModal(onDismissRequest = { isSheetOpen = false })
+        NewEntryModal(
+            onDismissRequest = { isSheetOpen = false },
+            onEntrySent = { message ->
+                android.widget.Toast
+                    .makeText(context, message, android.widget.Toast.LENGTH_SHORT)
+                    .show()
+            }
+        )
     }
 }
 

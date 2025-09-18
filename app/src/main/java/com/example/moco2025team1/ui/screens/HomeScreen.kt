@@ -13,6 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
+import com.example.moco2025team1.LoginRoute
 import com.example.moco2025team1.ui.composables.ContactCard
 import com.example.moco2025team1.viewmodel.HomeViewModel
 import com.example.moco2025team1.viewmodel.SessionViewModel
@@ -20,12 +22,40 @@ import com.example.moco2025team1.viewmodel.SessionViewModel
 @Composable
 fun HomeScreen(
     sessionViewModel: SessionViewModel,
+    navController: NavHostController,
     onOpenEntry: (Long) -> Unit = {}
 ) {
     val app = LocalContext.current.applicationContext as Application
     val vm: HomeViewModel = viewModel(factory = HomeViewModel.factory(app, sessionViewModel))
     val friends by vm.friends.collectAsState()
     val pendingBySender by vm.pendingBySender.collectAsState()
+
+    val context = LocalContext.current
+
+    val entryToastFlow = remember(navController) {
+        navController.currentBackStackEntry!!
+            .savedStateHandle
+            .getStateFlow<String?>("entry_toast", null)
+    }
+    val entryToast by entryToastFlow.collectAsState()
+
+    LaunchedEffect(entryToast) {
+        entryToast?.let { message ->
+            android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_SHORT).show()
+            navController.currentBackStackEntry!!.savedStateHandle["entry_toast"] = null
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        navController.previousBackStackEntry
+            ?.savedStateHandle
+            ?.get<String>("login_toast")
+            ?.let { message ->
+                android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_SHORT).show()
+                navController.previousBackStackEntry?.savedStateHandle?.remove<String>("login_toast")
+                navController.popBackStack(LoginRoute, inclusive = true)
+            }
+    }
 
     if (friends.isEmpty()) {
         Box(

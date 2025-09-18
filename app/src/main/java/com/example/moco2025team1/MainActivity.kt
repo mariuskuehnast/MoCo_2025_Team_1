@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
                         composable<HomeRoute> {
                             HomeScreen(
                                 sessionViewModel = sessionViewModel,
+                                navController = navController,
                                 onOpenEntry = { entryId ->
                                     navController.navigate(EntryViewerRoute(entryId))
                                 }

@@ -1,6 +1,6 @@
 package com.example.moco2025team1.ui.screens
 
-import android.app.Application
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -40,6 +40,8 @@ fun ProfileScreen(
     val scaffoldState = rememberBottomSheetScaffoldState()
     var pickerMode by remember { mutableStateOf<PickerMode?>(null) }
 
+    val context = LocalContext.current
+
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetPeekHeight = 0.dp,
@@ -66,6 +68,11 @@ fun ProfileScreen(
                             scaffoldState.bottomSheetState.partialExpand()
                             pickerMode = null
                             picked.forEach { viewModel.addFriend(it.id) }
+                            val message = if (picked.size == 1)
+                                "Successfully added ${picked.first().userName}"
+                            else
+                                "Successfully added ${picked.size} friends"
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         }
                     },
                     onDismiss  = {
@@ -84,6 +91,11 @@ fun ProfileScreen(
                             scaffoldState.bottomSheetState.partialExpand()
                             pickerMode = null
                             picked.forEach { viewModel.removeFriend(it.id) }
+                            val message = if (picked.size == 1)
+                                "Successfully removed ${picked.first().userName}"
+                            else
+                                "Successfully removed ${picked.size} friends"
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         }
                     },
                     onDismiss  = {
@@ -124,8 +136,7 @@ fun ProfileScreen(
                 onClick = {
                     scope.launch {
                         viewModel.saveName()
-                        scaffoldState.snackbarHostState
-                            .showSnackbar("Name successfully changed")
+                        Toast.makeText(context, "Name successfully changed", Toast.LENGTH_SHORT).show()
                     }
                 },
                 modifier = Modifier
@@ -166,9 +177,13 @@ fun ProfileScreen(
 
             Button(
                 onClick = {
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("logout_toast", "Successfully logged out of ${user?.userName}")
+
                     sessionViewModel.logout()
                     navController.navigate(LoginRoute) {
-                        popUpTo(LoginRoute) { inclusive = true }
+                        popUpTo(LoginRoute) { inclusive = false }
                     }
                 },
 

@@ -30,7 +30,10 @@ import kotlinx.serialization.Serializable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewEntryModal(onDismissRequest: () -> Unit) {
+fun NewEntryModal(
+    onDismissRequest: () -> Unit,
+    onEntrySent: (String) -> Unit = {}
+) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var prompt by remember { mutableStateOf<Prompt?>(null) }
     val navController = rememberNavController()
@@ -100,6 +103,8 @@ fun NewEntryModal(onDismissRequest: () -> Unit) {
                                 prompt = promptText
                             )
                             entryViewModel.sendEntry(newId, recipientId)
+
+                            onEntrySent("Entry successfully sent")
                         }
                     }
                     onDismissRequest()

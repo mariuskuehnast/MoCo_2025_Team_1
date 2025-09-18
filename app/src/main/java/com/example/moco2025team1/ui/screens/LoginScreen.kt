@@ -3,12 +3,11 @@ package com.example.moco2025team1.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.EmojiEmotions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,11 +35,32 @@ fun LoginScreen(
     val sheet     = rememberBottomSheetScaffoldState()
     var showSignUp by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+
     fun completeLogin(user: User) {
         sessionViewModel.login(user)
+
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.set("login_toast", "Successfully logged in as ${user.userName}")
+
         navController.navigate(HomeRoute) {
-            popUpTo(LoginRoute) { inclusive = true }
+            popUpTo(LoginRoute) { inclusive = false }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        navController.previousBackStackEntry
+            ?.savedStateHandle
+            ?.get<String>("logout_toast")
+            ?.let { message ->
+                android.widget.Toast
+                    .makeText(context, message, android.widget.Toast.LENGTH_SHORT)
+                    .show()
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.remove<String>("logout_toast")
+            }
     }
 
     BottomSheetScaffold(
