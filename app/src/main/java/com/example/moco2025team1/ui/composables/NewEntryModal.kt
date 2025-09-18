@@ -105,9 +105,11 @@ fun NewEntryModal(
                             entryViewModel.sendEntry(newId, recipientId)
 
                             onEntrySent("Entry successfully sent")
+                            sheetState.hide()
+                            onDismissRequest()
                         }
                     }
-                    onDismissRequest()
+
                 }
             }
         }
