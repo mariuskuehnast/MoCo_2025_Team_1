@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import coil3.compose.rememberAsyncImagePainter
 import com.example.moco2025team1.model.entities.Prompt
+import com.example.moco2025team1.ui.composables.EmojiRadialMenu
 import com.example.moco2025team1.ui.composables.TextInput
 import java.io.File
 import java.time.LocalDateTime
@@ -55,11 +56,13 @@ import java.time.format.FormatStyle
 fun EntryComposer(
     prompt: Prompt?,
     onBack: () -> Unit,
-    onConfirm: (text: String, imageUri: Uri?) -> Unit,
+    onConfirm: (text: String, imageUri: Uri?, mood: String) -> Unit,
     context: Context = LocalContext.current
 ) {
     val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
     var textInput by remember { mutableStateOf("") }
+    var showMoodPicker by remember { mutableStateOf(false) }
+    var mood by remember { mutableStateOf<String>("😊") }
 
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -92,7 +95,7 @@ fun EntryComposer(
             }
             IconButton(
                 modifier = Modifier.align(Alignment.CenterEnd),
-                onClick = { onConfirm(textInput, imageUri) }) {
+                onClick = { onConfirm(textInput, imageUri, mood) }) {
                 Icon(Icons.AutoMirrored.Filled.Send, "Send")
             }
             Column(
@@ -119,12 +122,20 @@ fun EntryComposer(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Button(
-                onClick = {},
+                onClick = { showMoodPicker = true },
                 shape = RoundedCornerShape(10.dp),
-                contentPadding = PaddingValues(20.dp),
-                modifier = Modifier.weight(1f)
+                contentPadding = PaddingValues(10.dp),
+                modifier = Modifier.weight(1f).height(60.dp),
             ) {
-                Text("😭")
+                Text(mood, fontSize = 22.sp)
+                if (showMoodPicker) {
+                    EmojiRadialMenu(
+                        onEmojiSelected = {
+                            mood = it
+                            showMoodPicker = false
+                        }
+                    )
+                }
             }
             imageUri?.let { uri ->
                 Box(
@@ -146,14 +157,13 @@ fun EntryComposer(
                     launcher.launch(photoUri)
                 },
                 shape = RoundedCornerShape(10.dp),
-                contentPadding = PaddingValues(20.dp),
-                modifier = Modifier.weight(if (imageUri != null) 1f else 2f)
+                modifier = Modifier.weight(if (imageUri != null) 1f else 2f).height(60.dp)
             ) {
                 if (imageUri == null) {
-                    Text("Add an Image")
+                    Text("Add an Image", fontSize = 16.sp)
                     Spacer(modifier = Modifier.width(10.dp))
                 }
-                Icon(Icons.Filled.PhotoCamera, "Camera", Modifier.size(18.dp))
+                Icon(Icons.Filled.PhotoCamera, "Camera", Modifier.size(22.dp))
             }
         }
         HorizontalDivider()
@@ -167,5 +177,5 @@ fun EntryComposerPreview() {
     EntryComposer(
         Prompt(content = "Test Prompt"),
         onBack = {},
-        onConfirm = { content, imageUri -> })
+        onConfirm = { content, imageUri, mood -> })
 }

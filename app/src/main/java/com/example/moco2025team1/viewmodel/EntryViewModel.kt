@@ -23,7 +23,8 @@ class EntryViewModel(app: Application) : AndroidViewModel(app) {
         imageUri: Uri?,
         senderId: Long,
         senderUserName: String,
-        prompt: String?
+        prompt: String?,
+        mood: String?
     ): Long {
         return entryStore.insertEntry(
             Entry(
@@ -31,7 +32,8 @@ class EntryViewModel(app: Application) : AndroidViewModel(app) {
                 imageUri = imageUri?.toString(),
                 senderId = senderId,
                 senderUserName = senderUserName,
-                prompt = prompt
+                prompt = prompt,
+                mood = mood
             )
         )
     }

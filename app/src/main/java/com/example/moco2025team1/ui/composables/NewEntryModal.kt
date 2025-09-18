@@ -40,6 +40,7 @@ fun NewEntryModal(
 
     var content by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var mood by remember { mutableStateOf<String?>(null) }
 
     val entryViewModel = viewModel<EntryViewModel>()
     val sessionViewModel = viewModel<SessionViewModel>()
@@ -70,9 +71,10 @@ fun NewEntryModal(
                         onBack = {
                             navController.navigate(PromptSelectionRoute)
                         },
-                        onConfirm = { newContent, newImageUri ->
+                        onConfirm = { newContent, newImageUri, newMood ->
                             content = newContent
                             imageUri = newImageUri
+                            mood = newMood
 
                             navController.navigate(
                                 ContactSelectionRoute
@@ -84,7 +86,8 @@ fun NewEntryModal(
                 ContactSelectionScreen(
                     entry = Entry(
                         content = content,
-                        imageUri = imageUri.toString()
+                        imageUri = imageUri.toString(),
+                        mood = mood
                     )
                 ) { _, contacts ->
                     val sender = sessionViewModel.currentUser.value
@@ -99,7 +102,8 @@ fun NewEntryModal(
                                 imageUri = imageUri,
                                 senderId = senderId,
                                 senderUserName = senderUserName,
-                                prompt = promptText
+                                prompt = promptText,
+                                mood = mood
                             )
                             entryViewModel.sendEntry(newId, contacts)
 

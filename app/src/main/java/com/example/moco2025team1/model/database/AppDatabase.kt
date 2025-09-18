@@ -22,7 +22,7 @@ import com.example.moco2025team1.model.entities.UserFriendCrossRef
         UserFriendCrossRef::class,
         EntryRecipientCrossRef::class
     ],
-    version = 10
+    version = 11
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
