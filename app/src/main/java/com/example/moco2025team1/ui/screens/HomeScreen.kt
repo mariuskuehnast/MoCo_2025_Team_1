@@ -32,28 +32,17 @@ fun HomeScreen(
 
     val context = LocalContext.current
 
-    val entryToastFlow = remember(navController) {
-        navController.currentBackStackEntry!!
-            .savedStateHandle
-            .getStateFlow<String?>("entry_toast", null)
-    }
-    val entryToast by entryToastFlow.collectAsState()
-
-    LaunchedEffect(entryToast) {
-        entryToast?.let { message ->
-            android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_SHORT).show()
-            navController.currentBackStackEntry!!.savedStateHandle["entry_toast"] = null
-        }
-    }
-
     LaunchedEffect(Unit) {
-        navController.previousBackStackEntry
+        navController.currentBackStackEntry
             ?.savedStateHandle
             ?.get<String>("login_toast")
             ?.let { message ->
-                android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_SHORT).show()
-                navController.previousBackStackEntry?.savedStateHandle?.remove<String>("login_toast")
-                navController.popBackStack(LoginRoute, inclusive = true)
+                android.widget.Toast
+                    .makeText(context, message, android.widget.Toast.LENGTH_SHORT)
+                    .show()
+                navController.currentBackStackEntry
+                    ?.savedStateHandle
+                    ?.remove<String>("login_toast")
             }
     }
 

@@ -40,13 +40,13 @@ fun LoginScreen(
     fun completeLogin(user: User) {
         sessionViewModel.login(user)
 
-        navController.currentBackStackEntry
-            ?.savedStateHandle
-            ?.set("login_toast", "Successfully logged in as ${user.userName}")
-
         navController.navigate(HomeRoute) {
-            popUpTo(LoginRoute) { inclusive = false }
+            popUpTo(LoginRoute) { inclusive = true }
+            launchSingleTop = true
         }
+
+        navController.getBackStackEntry(HomeRoute)
+            .savedStateHandle["login_toast"] = "Successfully logged in as ${user.userName}"
     }
 
     LaunchedEffect(Unit) {
