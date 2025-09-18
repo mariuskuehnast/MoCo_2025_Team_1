@@ -2,6 +2,7 @@ package com.example.moco2025team1.model.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import java.util.Date
 
 @Entity(
     tableName = "entry_recipients",
@@ -12,5 +13,6 @@ import androidx.room.ForeignKey
 )
 data class EntryRecipientCrossRef(
     val entryId: Long,
-    val recipientId: Long
+    val recipientId: Long,
+    val viewedAt: Date? = null
 )

@@ -42,6 +42,7 @@ fun EntryViewerScreen(
     entryViewModel: EntryViewModel = viewModel()
 ) {
     val entry by entryViewModel.getEntryById(entryId).collectAsState(null)
+    val currentUser by sessionViewModel.currentUser.collectAsState(null)
 
     if (entry == null) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -49,7 +50,7 @@ fun EntryViewerScreen(
         }
     } else {
         LaunchedEffect(entryId) {
-            entryViewModel.markViewedOnce(entryId)
+            currentUser?.let { entryViewModel.markViewedOnce(entryId, it.id) }
         }
         EntryViewerScreen(entry = entry!!)
     }
@@ -67,7 +68,8 @@ fun EntryViewerScreen(entry: Entry) {
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.align(Alignment.TopStart)
+            modifier = Modifier
+                .align(Alignment.TopStart)
                 .fillMaxWidth()
                 .background(
                     MaterialTheme.colorScheme.surface

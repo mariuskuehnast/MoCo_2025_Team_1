@@ -19,8 +19,8 @@ class EntryStore(
         }
     }
 
-    suspend fun markViewed(entryId: Long) =
-        entryDao.markViewed(entryId, Date())
+    suspend fun markViewed(entryId: Long, userId: Long) =
+        entryDao.markViewed(entryId, userId, Date())
 
     fun getPendingEntriesFromFriends(recipientId: Long) =
         entryDao.getPendingEntriesFromFriends(recipientId)

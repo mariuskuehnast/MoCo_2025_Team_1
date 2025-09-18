@@ -19,15 +19,17 @@ interface EntryDao {
     @Query("SELECT * FROM entries WHERE id = :id")
     fun getEntryById(id: Long): Flow<Entry?>
 
-    @Query("""
+    @Query(
+        """
         UPDATE entries
         SET recipientId = :recipientId
         WHERE id = :entryId
-    """)
+    """
+    )
     suspend fun sendEntry(entryId: Long, recipientId: Long)
 
-    @Query("UPDATE entries SET viewedAt = :whenViewed WHERE id = :entryId AND viewedAt IS NULL")
-    suspend fun markViewed(entryId: Long, whenViewed: Date)
+    @Query("UPDATE entry_recipients SET viewedAt = :whenViewed WHERE entryId = :entryId AND recipientId = :userId")
+    suspend fun markViewed(entryId: Long, userId: Long, whenViewed: Date)
 
     data class PendingEntryFromFriend(
         val senderId: Long,
@@ -35,7 +37,8 @@ interface EntryDao {
         val latestEntryId: Long
     )
 
-    @Query("""
+    @Query(
+        """
         SELECT entries.senderId AS senderId,
                COUNT(*)         AS count,
                MAX(entries.id)  AS latestEntryId
@@ -45,6 +48,7 @@ interface EntryDao {
             entry_recipients.recipientId = :recipientId AND
             viewedAt IS NULL
         GROUP BY senderId
-    """)
+    """
+    )
     fun getPendingEntriesFromFriends(recipientId: Long): Flow<List<PendingEntryFromFriend>>
 }

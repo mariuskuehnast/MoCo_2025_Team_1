@@ -44,7 +44,7 @@ class EntryViewModel(app: Application) : AndroidViewModel(app) {
         entryStore.send(entryId, recipients)
     }
 
-    suspend fun markViewedOnce(entryId: Long) {
-        entryStore.markViewed(entryId)
+    suspend fun markViewedOnce(entryId: Long, userId: Long) {
+        entryStore.markViewed(entryId, userId)
     }
 }

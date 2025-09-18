@@ -15,6 +15,5 @@ data class Entry(
     val imageUri: String? = null,
     val createdAt: Date = Date(),
     val senderId: Long? = null,
-    val recipientId: Long? = null,
-    val viewedAt: Date? = null
+    val recipientId: Long? = null
 )
