@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.moco2025team1.model.entities.Entry
+import com.example.moco2025team1.model.entities.EntryRecipientCrossRef
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
@@ -11,6 +12,9 @@ import java.util.Date
 interface EntryDao {
     @Insert
     suspend fun insertEntry(entry: Entry): Long
+
+    @Insert
+    suspend fun insertEntryRecipientCrossRef(crossRef: EntryRecipientCrossRef)
 
     @Query("SELECT * FROM entries WHERE id = :id")
     fun getEntryById(id: Long): Flow<Entry?>
@@ -32,11 +36,14 @@ interface EntryDao {
     )
 
     @Query("""
-        SELECT senderId AS senderId,
-               COUNT(*)  AS count,
-               MAX(id)   AS latestEntryId
+        SELECT entries.senderId AS senderId,
+               COUNT(*)         AS count,
+               MAX(entries.id)  AS latestEntryId
         FROM entries
-        WHERE recipientId = :recipientId AND viewedAt IS NULL
+            INNER JOIN entry_recipients ON entries.id = entry_recipients.entryId 
+        WHERE
+            entry_recipients.recipientId = :recipientId AND
+            viewedAt IS NULL
         GROUP BY senderId
     """)
     fun getPendingEntriesFromFriends(recipientId: Long): Flow<List<PendingEntryFromFriend>>

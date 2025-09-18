@@ -9,6 +9,7 @@ import com.example.moco2025team1.model.daos.EntryDao
 import com.example.moco2025team1.model.daos.PromptDao
 import com.example.moco2025team1.model.daos.UserDao
 import com.example.moco2025team1.model.entities.Entry
+import com.example.moco2025team1.model.entities.EntryRecipientCrossRef
 import com.example.moco2025team1.model.entities.Prompt
 import com.example.moco2025team1.model.entities.User
 import com.example.moco2025team1.model.entities.UserFriendCrossRef
@@ -19,8 +20,9 @@ import com.example.moco2025team1.model.entities.UserFriendCrossRef
         Entry::class,
         User::class,
         UserFriendCrossRef::class,
+        EntryRecipientCrossRef::class
     ],
-    version = 7
+    version = 9
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

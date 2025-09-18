@@ -90,10 +90,9 @@ fun NewEntryModal(
                     val sender = sessionViewModel.currentUser.value
                     val senderId = sender?.id
                     val senderUserName = sender?.userName ?: ""
-                    val recipientId = contacts.firstOrNull()?.id
                     val promptText = prompt?.content
 
-                    if (senderId != null && recipientId != null) {
+                    if (senderId != null) {
                         scope.launch {
                             val newId = entryViewModel.insertEntry(
                                 content = content,
@@ -102,7 +101,7 @@ fun NewEntryModal(
                                 senderUserName = senderUserName,
                                 prompt = promptText
                             )
-                            entryViewModel.sendEntry(newId, recipientId)
+                            entryViewModel.sendEntry(newId, contacts)
 
                             onEntrySent("Entry successfully sent")
                             sheetState.hide()

@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moco2025team1.model.database.AppDatabase
 import com.example.moco2025team1.model.entities.Entry
+import com.example.moco2025team1.model.entities.User
 import com.example.moco2025team1.model.stores.EntryStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -39,8 +40,8 @@ class EntryViewModel(app: Application) : AndroidViewModel(app) {
         return entryStore.getEntryById(id)
     }
 
-    suspend fun sendEntry(entryId: Long, recipientId: Long) {
-        entryStore.send(entryId, recipientId)
+    suspend fun sendEntry(entryId: Long, recipients: List<User>) {
+        entryStore.send(entryId, recipients)
     }
 
     suspend fun markViewedOnce(entryId: Long) {
