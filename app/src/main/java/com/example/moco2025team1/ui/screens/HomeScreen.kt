@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import com.example.moco2025team1.ui.composables.ContactCard
+import com.example.moco2025team1.ui.composables.HomeContactCard
 import com.example.moco2025team1.viewmodel.HomeViewModel
 import com.example.moco2025team1.viewmodel.SessionViewModel
 
@@ -82,7 +82,7 @@ fun HomeScreen(
             val latestId = pendingBySender[user.id]
             val hasPending = latestId != null
 
-            ContactCard(
+            HomeContactCard(
                 userName = user.userName,
                 subtitle = if (hasPending) "You have an unviewed entry!" else null,
                 isUnlockAvailable = hasPending

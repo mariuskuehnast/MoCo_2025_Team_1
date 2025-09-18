@@ -1,13 +1,8 @@
 package com.example.moco2025team1.ui.composables
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
@@ -24,19 +19,20 @@ import com.example.moco2025team1.model.entities.User
 fun ContactRow(
     user: User,
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+    showCheckbox: Boolean = true
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable(enabled = showCheckbox) { onCheckedChange(!checked) }
+            .padding(horizontal = 16.dp, vertical = 10.dp)
     ) {
-        Checkbox(
-            checked = checked,
-            onCheckedChange = onCheckedChange
-        )
-        Spacer(Modifier.width(12.dp))
+        if (showCheckbox) {
+            Checkbox(checked = checked, onCheckedChange = onCheckedChange)
+            Spacer(Modifier.width(12.dp))
+        }
 
         Box(
             modifier = Modifier
@@ -54,9 +50,6 @@ fun ContactRow(
         }
         Spacer(Modifier.width(12.dp))
 
-        Text(
-            text = user.userName,
-            style = MaterialTheme.typography.bodyLarge
-        )
+        Text(text = user.userName, style = MaterialTheme.typography.bodyLarge)
     }
 }

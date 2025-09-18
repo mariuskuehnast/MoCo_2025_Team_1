@@ -19,7 +19,7 @@ import androidx.compose.material3.*
 
 
 @Composable
-fun ContactCard(
+fun HomeContactCard(
     userName: String,
     modifier: Modifier = Modifier,
     subtitle: String? = null,

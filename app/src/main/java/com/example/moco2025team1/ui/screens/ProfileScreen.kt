@@ -51,6 +51,7 @@ fun ProfileScreen(
                 PickerMode.VIEW -> ContactPicker(
                     title      = "Your Friends",
                     candidates = friends,
+                    showCheckboxes = false,
                     onConfirm  = {  },
                     onDismiss  = {
                         scope.launch {
@@ -63,6 +64,7 @@ fun ProfileScreen(
                 PickerMode.ADD -> ContactPicker(
                     title      = "Add Friend",
                     candidates = allUsers.filter { it.id !in friends.map { f -> f.id } },
+                    currentUserIdToHide = user?.id,
                     onConfirm  = { picked ->
                         scope.launch {
                             scaffoldState.bottomSheetState.partialExpand()
