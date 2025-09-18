@@ -1,9 +1,6 @@
 package com.example.moco2025team1.ui.composables
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,45 +12,57 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.*
+
 
 @Composable
 fun ContactCard(
     userName: String,
     modifier: Modifier = Modifier,
+    subtitle: String? = null,
     isUnlockAvailable: Boolean = false,
     callClick: () -> Unit
 ) {
-    Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(3.dp))
-            .padding(3.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Spacer(Modifier.size(10.dp))
-        Avatar(userName.first())
-        Spacer(Modifier.size(10.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(userName, style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.size(2.dp))
-            Text("", style = MaterialTheme.typography.bodySmall)
-        }
-        IconButton(onClick = callClick, enabled = isUnlockAvailable) {
-            Icon(
-                imageVector = if (isUnlockAvailable) Icons.Filled.Markunread else Icons.Filled.Lock,
-                contentDescription = if (isUnlockAvailable) "View entry" else "No entry",
-                tint = MaterialTheme.colorScheme.primary
-            )
-        }
-    }
-}
+    val backgroundColor = MaterialTheme.colorScheme.surface
+    val roundedCornerShape = RoundedCornerShape(16.dp)
 
-@Composable
-@Preview(showBackground = true)
-fun ContactCardPreview() {
-    ContactCard("Hans", modifier = Modifier.fillMaxWidth()) {}
+    Surface(
+        color = backgroundColor,
+        shape = roundedCornerShape,
+        tonalElevation = 1.dp,
+        modifier = modifier.clip(roundedCornerShape)
+    ) {
+        ListItem(
+            modifier = Modifier
+                .padding(vertical = 4.dp)
+                .heightIn(min = 72.dp),
+            leadingContent = { Avatar(userName.first()) },
+            headlineContent = {
+                Text(text = userName, style = MaterialTheme.typography.titleMedium)
+            },
+            supportingContent = {
+                val subtitleColor = if (isUnlockAvailable)
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                else
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
+                if (!subtitle.isNullOrBlank()) {
+                    Text(text = subtitle, color = subtitleColor, style = MaterialTheme.typography.bodySmall)
+                }
+            },
+            trailingContent = {
+                IconButton(onClick = callClick, enabled = isUnlockAvailable) {
+                    Icon(
+                        imageVector = if (isUnlockAvailable) Icons.Filled.Markunread else Icons.Filled.Lock,
+                        contentDescription = if (isUnlockAvailable) "View entry" else "No entry",
+                        tint = if (isUnlockAvailable) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+            }
+        )
+    }
 }
