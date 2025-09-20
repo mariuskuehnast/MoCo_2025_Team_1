@@ -1,5 +1,6 @@
 package com.example.moco2025team1.ui.screens
 
+import android.text.format.DateFormat
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,9 +12,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -29,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,7 +50,8 @@ import com.example.moco2025team1.viewmodel.SessionViewModel
 fun EntryViewerScreen(
     entryId: Long,
     sessionViewModel: SessionViewModel,
-    entryViewModel: EntryViewModel = viewModel()
+    entryViewModel: EntryViewModel = viewModel(),
+    onBack: () -> Unit = {}
 ) {
     val entry by entryViewModel.getEntryById(entryId).collectAsState(null)
     val currentUser by sessionViewModel.currentUser.collectAsState(null)
@@ -57,7 +64,7 @@ fun EntryViewerScreen(
         LaunchedEffect(entryId) {
             currentUser?.let { entryViewModel.markViewedOnce(entryId, it.id) }
         }
-        EntryViewerScreen(entry = entry!!)
+        EntryViewerScreen(entry = entry!!, onBack = onBack)
     }
 }
 
@@ -73,11 +80,17 @@ fun shortenContent(content: String): String {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntryViewerScreen(entry: Entry) {
+fun EntryViewerScreen(entry: Entry, onBack: () -> Unit = {}) {
     val bottomSheetState = rememberModalBottomSheetState()
     var showMore by remember { mutableStateOf(false) }
 
     val shortenedContent = shortenContent(entry.content)
+    val context = LocalContext.current
+    val dateText = remember(entry.createdAt) {
+        val dateFormatted = DateFormat.getMediumDateFormat(context).format(entry.createdAt)
+        val timeFormatted = DateFormat.getTimeFormat(context).format(entry.createdAt)
+        "$dateFormatted • $timeFormatted"
+    }
 
     Box {
         Image(
@@ -91,14 +104,42 @@ fun EntryViewerScreen(entry: Entry) {
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .fillMaxWidth()
-                .background(
-                    MaterialTheme.colorScheme.surface
-                )
-                .padding(30.dp, 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(15.dp)
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(horizontal = 24.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = androidx.compose.foundation.shape.CircleShape
+                    )
+            ) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+            }
             Avatar((entry.senderUserName?.firstOrNull() ?: '?'))
-            Text(entry.senderUserName ?: "", style = MaterialTheme.typography.titleMedium)
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    entry.senderUserName ?: "",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                val moodText = entry.mood?.takeIf { it.isNotBlank() } ?: "—"
+                Text(
+                    "Current mood: $moodText · $dateText",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+            }
         }
         Column(
             modifier = Modifier

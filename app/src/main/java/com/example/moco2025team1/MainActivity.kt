@@ -70,7 +70,12 @@ class MainActivity : ComponentActivity() {
                         }
                         composable<EntryViewerRoute> { backstack ->
                             val entryId = backstack.toRoute<EntryViewerRoute>().entryId
-                            EntryViewerScreen(entryId, sessionViewModel)
+                            EntryViewerScreen(
+                                entryId = entryId,
+                                sessionViewModel = sessionViewModel,
+                                onBack = {navController.navigate(HomeRoute) { launchSingleTop = true }
+                                }
+                            )
                         }
                     }
 
